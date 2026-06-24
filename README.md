@@ -76,3 +76,5 @@ bash docker/real_mapping_docker.sh
 AUTO_BUILD=1 BUILD_TYPE=Debug bash docker/real_nav_docker.sh
 ```
 # hx_sentry_docker_test
+
+开源源码，太原理工 https://github.com/yuzhuohao111/hx_Sentry_2025
