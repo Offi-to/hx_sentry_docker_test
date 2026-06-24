@@ -1,0 +1,57 @@
+x-hx-nav-base: &hx-nav-base
+  image: hx_sentry_nav
+  build:
+    context: ..
+    dockerfile: docker/Dockerfile
+  privileged: true
+  ipc: host
+  network_mode: host
+  init: true
+  tty: true
+  stdin_open: true
+  working_dir: /workspaces/hx_sentry_2025_docker
+  volumes:
+    - ..:/workspaces/hx_sentry_2025_docker
+  extra_hosts:
+    - "host.docker.internal:host-gateway"
+  environment: &hx-nav-env
+    DISPLAY: ${DISPLAY:-host.docker.internal:0.0}
+    QT_X11_NO_MITSHM: "1"
+    QT_OPENGL: software
+    LIBGL_ALWAYS_SOFTWARE: "1"
+    ROS_DOMAIN_ID: ${ROS_DOMAIN_ID:-0}
+    RMW_IMPLEMENTATION: ${RMW_IMPLEMENTATION:-rmw_fastrtps_cpp}
+    AUTO_BUILD: ${AUTO_BUILD:-0}
+    BUILD_TYPE: ${BUILD_TYPE:-RelWithDebInfo}
+    WORKSPACE_ROOT: /workspaces/hx_sentry_2025_docker
+
+services:
+  dev-shell:
+    <<: *hx-nav-base
+    container_name: hx_sentry_nav_dev_shell
+    command: ["bash"]
+    profiles: ["dev"]
+
+  real-mapping:
+    <<: *hx-nav-base
+    container_name: hx_sentry_nav_real_mapping
+    command: ["bash", "docker/real_mapping_docker.sh"]
+    profiles: ["real-mapping"]
+
+  real-nav:
+    <<: *hx-nav-base
+    container_name: hx_sentry_nav_real_nav
+    command: ["bash", "docker/real_nav_docker.sh"]
+    profiles: ["real-nav"]
+
+  sim-mapping:
+    <<: *hx-nav-base
+    container_name: hx_sentry_nav_sim_mapping
+    command: ["bash", "docker/sim_mapping_docker.sh"]
+    profiles: ["sim-mapping"]
+
+  sim-nav:
+    <<: *hx-nav-base
+    container_name: hx_sentry_nav_sim_nav
+    command: ["bash", "docker/sim_nav_docker.sh"]
+    profiles: ["sim-nav"]
